@@ -11,17 +11,30 @@ provider:
 
 
 functions:
-  incomingSesEmail:
+  incomingSesEmailParser:
     handler: handler.hello
+
+  processAcceptOrReject:
+    handler: handler.acceptReject
 
 resources:
   Resources:
     SESPermissionToLambda:
       Type: AWS::Lambda::Permission
       Properties:
-        Action: 
+        Action: lambda:InvokeFunction
         FunctionName: 
-          "Fn::GetAtt": [ S3toEc2LambdaLambdaFunction, Arn ]
-        Principal: 
+          "Fn::GetAtt": [ IncomingSesEmailParserLambdaFunction, Arn ]
+        Principal: ses.amazonaws.com
         SourceAccount: 
-        SourceArn: 
+          Ref: AWS::AccountId
+    SESPermissionToInvokeProcessAcceptRejeectLambda:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: 
+          "Fn::GetAtt": [ IncomingSesEmailParserLambdaFunction, Arn ]
+        Principal: ses.amazonaws.com
+        SourceAccount: 
+          Ref: AWS::AccountId
+
