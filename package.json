@@ -1,0 +1,20 @@
+{
+  "name": "aws-serverless-nodejs-ses-receive-email",
+  "version": "1.0.0",
+  "description": "Receive an email header with SES and trigger a lambda",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfolivas/aws-serverless-nodejs-ses-receive-email.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mfolivas/aws-serverless-nodejs-ses-receive-email/issues"
+  },
+  "homepage": "https://github.com/mfolivas/aws-serverless-nodejs-ses-receive-email#readme",
+  "dependencies": {}
+}

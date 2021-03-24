@@ -6,16 +6,13 @@ module.exports.hello = async (event) => {
     body: JSON.stringify(
       {
         message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
+        input: getAllEmails(event.Records),
       },
       null,
       2
     ),
-  };
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
-};
+  }
+}
 
 
 module.exports.acceptReject = async (event) => {
@@ -24,10 +21,27 @@ module.exports.acceptReject = async (event) => {
     body: JSON.stringify(
       {
         message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
+        input: fetchAllInvalidReceipt(event.Records),
       },
       null,
       2
     ),
   };
+}
+
+const getAllEmails = records => {
+  return (records) ? records.map(record => record.ses.mail) : undefined
+}
+
+const fetchAllInvalidReceipt = records => {
+  const receipts = records.map(record => record.ses.receipt)
+  const { spfVerdict, dkimVerdict, spamVerdict, virusVerdict } = receipts
+  if (
+    spfVerdict.status === 'FAIL' ||
+    dkimVerdict.status === 'FAIL' ||
+    spamVerdict.status === 'FAIL' ||
+    virusVerdict.status === 'FAIL'
+  ) {
+    return { disposition: 'STOP_RULE_SET' }
+  }
 }
