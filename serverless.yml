@@ -1,0 +1,27 @@
+service: aws-serverless-nodejs-ses-receive-email
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-1
+
+
+functions:
+  incomingSesEmail:
+    handler: handler.hello
+
+resources:
+  Resources:
+    SESPermissionToLambda:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: 
+        FunctionName: 
+          "Fn::GetAtt": [ S3toEc2LambdaLambdaFunction, Arn ]
+        Principal: 
+        SourceAccount: 
+        SourceArn: 
