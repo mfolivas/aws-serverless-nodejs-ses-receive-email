@@ -10,7 +10,8 @@ provider:
   region: us-east-1
 
 custom:
-  rule-set-name: default-rule-set
+  email-handler-rule-set-name: filter-rule-set
+  email-validation-rule-set-name: validation-rule-set
 
 functions:
   incomingSesEmail:
@@ -41,18 +42,18 @@ resources:
         SourceAccount: 
           Ref: AWS::AccountId
 
-    SESRuleSet:
+    SESEmailHandlerRuleSet:
       Type: AWS::SES::ReceiptRuleSet
       Properties:
-        RuleSetName: ${self:custom.rule-set-name}
+        RuleSetName: ${self:custom.email-handler-rule-set-name}
 
     SESEmailReceivedRule:
       Type: AWS::SES::ReceiptRule
       Properties:
-        RuleSetName: ${self:custom.rule-set-name}
+        RuleSetName: ${self:custom.email-handler-rule-set-name}
         Rule:
           Name: 
-            Ref: SESRuleSet
+            Ref: SESEmailHandlerRuleSet
           Recipients:
             - someone@acme.com
           Enabled: true
@@ -61,3 +62,22 @@ resources:
                 FunctionArn: 
                   Fn::GetAtt: [ IncomingSesEmailLambdaFunction, Arn ]
                 InvocationType: Event
+
+    SESEmailValidationRuleSet:
+      Type: AWS::SES::ReceiptRuleSet
+      Properties:
+        RuleSetName: ${self:custom.email-validation-rule-set-name}
+
+    SESEmailValidationRule:
+      Type: AWS::SES::ReceiptRule
+      Properties:
+        RuleSetName: ${self:custom.email-validation-rule-set-name}
+        Rule:
+          Name: 
+            Ref: SESEmailValidationRuleSet
+          Enabled: true
+          Actions:
+            - LambdaAction:
+                FunctionArn: 
+                  Fn::GetAtt: [ IncomingSesEmailLambdaFunction, Arn ]
+                InvocationType: RequestResponse

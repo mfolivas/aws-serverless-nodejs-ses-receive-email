@@ -9,6 +9,13 @@ This example shows how to receive an email header with SES, trigger a lambda fun
 
 ## Setup
 
+- Application setups two `ReceiptRule`: `SESEmailReceivedRule` and `SESEmailValidationRule`.
+
+The "receive" takes action on a given recipients while the validation takes all rejected e-mails.
+
+
+To manually create these follow these steps:
+
 - [Create a SES verified Domain](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) but do not setup the "Rule Set"
 - if you change the region check if SES receiving exists in your region
 - if you change the function names you will need to update the normalized function name used in the resource section - e.g. processacceptreject => ProcessacceptrejectLambdaFunction
