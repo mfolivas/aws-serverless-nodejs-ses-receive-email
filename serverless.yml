@@ -11,10 +11,10 @@ provider:
 
 
 functions:
-  incomingSesEmailParser:
+  incomingSesEmail:
     handler: handler.hello
 
-  processAcceptOrReject:
+  emailValidator:
     handler: handler.acceptReject
 
 resources:
@@ -24,7 +24,7 @@ resources:
       Properties:
         Action: lambda:InvokeFunction
         FunctionName: 
-          "Fn::GetAtt": [ IncomingSesEmailParserLambdaFunction, Arn ]
+          "Fn::GetAtt": [ IncomingSesEmailLambdaFunction, Arn ]
         Principal: ses.amazonaws.com
         SourceAccount: 
           Ref: AWS::AccountId
@@ -33,7 +33,7 @@ resources:
       Properties:
         Action: lambda:InvokeFunction
         FunctionName: 
-          "Fn::GetAtt": [ IncomingSesEmailParserLambdaFunction, Arn ]
+          "Fn::GetAtt": [ EmailValidatorLambdaFunction, Arn ]
         Principal: ses.amazonaws.com
         SourceAccount: 
           Ref: AWS::AccountId
