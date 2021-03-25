@@ -38,7 +38,6 @@ serverless deploy
 
 ## Setup SNS Email Receiving Rule for accept or reject emails
 
-Schritte 1-5 sind identisch dann:
 
 6) For **Lambda function**, choose the lambda function with the name **aws-node-ses-receive-email-header-dev-processacceptreject** you defined in `serverless.yml`
 6) **Invocation type** choose **RequestResponse** (Lambda function will be called synchronously to control mail flow)

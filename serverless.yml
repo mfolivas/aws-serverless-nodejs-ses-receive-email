@@ -9,10 +9,12 @@ provider:
   stage: dev
   region: us-east-1
 
+custom:
+  rule-set-name: default-rule-set
 
 functions:
   incomingSesEmail:
-    handler: handler.hello
+    handler: handler.email
 
   emailValidator:
     handler: handler.acceptReject
@@ -24,17 +26,38 @@ resources:
       Properties:
         Action: lambda:InvokeFunction
         FunctionName: 
-          "Fn::GetAtt": [ IncomingSesEmailLambdaFunction, Arn ]
+          Fn::GetAtt: [ IncomingSesEmailLambdaFunction, Arn ]
         Principal: ses.amazonaws.com
         SourceAccount: 
           Ref: AWS::AccountId
+
     SESPermissionToInvokeProcessAcceptRejeectLambda:
       Type: AWS::Lambda::Permission
       Properties:
         Action: lambda:InvokeFunction
         FunctionName: 
-          "Fn::GetAtt": [ EmailValidatorLambdaFunction, Arn ]
+          Fn::GetAtt: [ EmailValidatorLambdaFunction, Arn ]
         Principal: ses.amazonaws.com
         SourceAccount: 
           Ref: AWS::AccountId
 
+    SESRuleSet:
+      Type: AWS::SES::ReceiptRuleSet
+      Properties:
+        RuleSetName: ${self:custom.rule-set-name}
+
+    SESEmailReceivedRule:
+      Type: AWS::SES::ReceiptRule
+      Properties:
+        RuleSetName: ${self:custom.rule-set-name}
+        Rule:
+          Name: 
+            Ref: SESRuleSet
+          Recipients:
+            - someone@acme.com
+          Enabled: true
+          Actions:
+            - LambdaAction:
+                FunctionArn: 
+                  Fn::GetAtt: [ IncomingSesEmailLambdaFunction, Arn ]
+                InvocationType: Event
